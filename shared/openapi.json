@@ -1,0 +1,796 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LSP Hackathon",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/vehicles/count": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Get Vehicle Count",
+        "description": "Get total count of vehicles",
+        "operationId": "get_vehicle_count_api_vehicles_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleCountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/quick-stats": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Get Quick Stats",
+        "description": "Get quick statistics for dashboard",
+        "operationId": "get_quick_stats_api_vehicles_quick_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuickStatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicles/events": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Get Events",
+        "description": "Get recent events/logs",
+        "operationId": "get_events_api_vehicles_events_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Severity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/simulation/vehicles/positions": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Get Vehicle Positions",
+        "description": "Get all vehicles with randomly assigned positions from the locations database.\nEach call randomly assigns vehicles to locations to simulate movement.",
+        "operationId": "get_vehicle_positions_api_simulation_vehicles_positions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiclePositionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/simulation/locations": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Get Locations",
+        "operationId": "get_locations_api_simulation_locations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/simulation/financial-stats": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Get Financial Stats",
+        "description": "Get financial statistics from the simulation results",
+        "operationId": "get_financial_stats_api_simulation_financial_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialStatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/simulation/time": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Get Simulation Time",
+        "description": "Get current simulation time and status from the coordinator",
+        "operationId": "get_simulation_time_api_simulation_time_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationTimeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tracking/positions": {
+      "get": {
+        "tags": [
+          "tracking"
+        ],
+        "summary": "Get Positions",
+        "operationId": "get_positions_api_tracking_positions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tracking/speed": {
+      "post": {
+        "tags": [
+          "tracking"
+        ],
+        "summary": "Update Speed",
+        "operationId": "update_speed_api_tracking_speed_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpeedUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tracking/recalculate": {
+      "post": {
+        "tags": [
+          "tracking"
+        ],
+        "summary": "Recalculate Truck",
+        "operationId": "recalculate_truck_api_tracking_recalculate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecalculateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventLogEntry": {
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "vehicle_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vehicle Id"
+          },
+          "registration_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registration Number"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "timestamp",
+          "type",
+          "message",
+          "vehicle_id",
+          "registration_number",
+          "severity"
+        ],
+        "title": "EventLogEntry"
+      },
+      "EventLogResponse": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventLogEntry"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "events",
+          "total_count"
+        ],
+        "title": "EventLogResponse"
+      },
+      "FinancialStatsResponse": {
+        "properties": {
+          "relocation_cost_pln": {
+            "type": "number",
+            "title": "Relocation Cost Pln"
+          },
+          "service_cost_pln": {
+            "type": "number",
+            "title": "Service Cost Pln"
+          },
+          "penalty_cost_pln": {
+            "type": "number",
+            "title": "Penalty Cost Pln"
+          },
+          "total_cost_pln": {
+            "type": "number",
+            "title": "Total Cost Pln"
+          },
+          "routes_assigned": {
+            "type": "integer",
+            "title": "Routes Assigned"
+          },
+          "vehicles_used": {
+            "type": "integer",
+            "title": "Vehicles Used"
+          },
+          "total_services": {
+            "type": "integer",
+            "title": "Total Services"
+          },
+          "total_distance_km": {
+            "type": "number",
+            "title": "Total Distance Km"
+          },
+          "data_available": {
+            "type": "boolean",
+            "title": "Data Available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "relocation_cost_pln",
+          "service_cost_pln",
+          "penalty_cost_pln",
+          "total_cost_pln",
+          "routes_assigned",
+          "vehicles_used",
+          "total_services",
+          "total_distance_km",
+          "data_available"
+        ],
+        "title": "FinancialStatsResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LocationData": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "long": {
+            "type": "number",
+            "title": "Long"
+          },
+          "is_hub": {
+            "type": "boolean",
+            "title": "Is Hub"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "lat",
+          "long",
+          "is_hub"
+        ],
+        "title": "LocationData"
+      },
+      "LocationsResponse": {
+        "properties": {
+          "locations": {
+            "items": {
+              "$ref": "#/components/schemas/LocationData"
+            },
+            "type": "array",
+            "title": "Locations"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "locations",
+          "total_count"
+        ],
+        "title": "LocationsResponse"
+      },
+      "QuickStatsResponse": {
+        "properties": {
+          "top_3_lease_ending": {
+            "items": {
+              "$ref": "#/components/schemas/VehicleLeaseInfo"
+            },
+            "type": "array",
+            "title": "Top 3 Lease Ending"
+          },
+          "top_3_service_needed": {
+            "items": {
+              "$ref": "#/components/schemas/VehicleServiceInfo"
+            },
+            "type": "array",
+            "title": "Top 3 Service Needed"
+          },
+          "vehicles_over_limit": {
+            "type": "integer",
+            "title": "Vehicles Over Limit"
+          },
+          "total_services_needed": {
+            "type": "integer",
+            "title": "Total Services Needed"
+          },
+          "average_odometer": {
+            "type": "number",
+            "title": "Average Odometer"
+          },
+          "total_km_driven": {
+            "type": "number",
+            "title": "Total Km Driven"
+          },
+          "vehicles_needing_replacement": {
+            "type": "integer",
+            "title": "Vehicles Needing Replacement"
+          },
+          "average_days_to_lease_end": {
+            "type": "number",
+            "title": "Average Days To Lease End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "top_3_lease_ending",
+          "top_3_service_needed",
+          "vehicles_over_limit",
+          "total_services_needed",
+          "average_odometer",
+          "total_km_driven",
+          "vehicles_needing_replacement",
+          "average_days_to_lease_end"
+        ],
+        "title": "QuickStatsResponse"
+      },
+      "RecalculateRequest": {
+        "properties": {
+          "truck_id": {
+            "type": "integer",
+            "title": "Truck Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "truck_id"
+        ],
+        "title": "RecalculateRequest"
+      },
+      "SimulationTimeResponse": {
+        "properties": {
+          "current_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Current Time"
+          },
+          "simulation_start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Simulation Start"
+          },
+          "simulation_speed": {
+            "type": "number",
+            "title": "Simulation Speed"
+          },
+          "is_running": {
+            "type": "boolean",
+            "title": "Is Running"
+          },
+          "elapsed_days": {
+            "type": "integer",
+            "title": "Elapsed Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_time",
+          "simulation_start",
+          "simulation_speed",
+          "is_running",
+          "elapsed_days"
+        ],
+        "title": "SimulationTimeResponse"
+      },
+      "SpeedUpdate": {
+        "properties": {
+          "speed_multiplier": {
+            "type": "number",
+            "title": "Speed Multiplier"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speed_multiplier"
+        ],
+        "title": "SpeedUpdate"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VehicleCountResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count"
+        ],
+        "title": "VehicleCountResponse"
+      },
+      "VehicleLeaseInfo": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "registration_number": {
+            "type": "string",
+            "title": "Registration Number"
+          },
+          "brand": {
+            "type": "string",
+            "title": "Brand"
+          },
+          "leasing_end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Leasing End Date"
+          },
+          "days_remaining": {
+            "type": "integer",
+            "title": "Days Remaining"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "registration_number",
+          "brand",
+          "leasing_end_date",
+          "days_remaining"
+        ],
+        "title": "VehicleLeaseInfo"
+      },
+      "VehiclePosition": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "registration_number": {
+            "type": "string",
+            "title": "Registration Number"
+          },
+          "brand": {
+            "type": "string",
+            "title": "Brand"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          },
+          "location_name": {
+            "type": "string",
+            "title": "Location Name"
+          },
+          "current_odometer_km": {
+            "type": "integer",
+            "title": "Current Odometer Km"
+          },
+          "service_interval_km": {
+            "type": "integer",
+            "title": "Service Interval Km"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "registration_number",
+          "brand",
+          "latitude",
+          "longitude",
+          "location_name",
+          "current_odometer_km",
+          "service_interval_km"
+        ],
+        "title": "VehiclePosition"
+      },
+      "VehiclePositionsResponse": {
+        "properties": {
+          "vehicles": {
+            "items": {
+              "$ref": "#/components/schemas/VehiclePosition"
+            },
+            "type": "array",
+            "title": "Vehicles"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vehicles",
+          "total_count"
+        ],
+        "title": "VehiclePositionsResponse"
+      },
+      "VehicleServiceInfo": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "registration_number": {
+            "type": "string",
+            "title": "Registration Number"
+          },
+          "brand": {
+            "type": "string",
+            "title": "Brand"
+          },
+          "current_odometer_km": {
+            "type": "integer",
+            "title": "Current Odometer Km"
+          },
+          "service_interval_km": {
+            "type": "integer",
+            "title": "Service Interval Km"
+          },
+          "km_until_service": {
+            "type": "integer",
+            "title": "Km Until Service"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "registration_number",
+          "brand",
+          "current_odometer_km",
+          "service_interval_km",
+          "km_until_service"
+        ],
+        "title": "VehicleServiceInfo"
+      }
+    }
+  }
+}
